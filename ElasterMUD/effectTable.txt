@@ -1,0 +1,5 @@
+[Effects]
+
+0 - None
+1 - HP Increase/Decrease
+2 - MP Increase/Decrease

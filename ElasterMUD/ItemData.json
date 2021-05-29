@@ -1,0 +1,23 @@
+{
+	"items" : {
+		"None" : {
+			"price" : 0,
+			"effect" : 0
+		},
+		"HP_0" : {
+			"price" : 200,
+			"effect" : 1,
+			"effectAmount" : 50
+		},
+		"MP_0" : {
+			"price" : 200,
+			"effect" : 2,
+			"effectAmount" : 30
+		},
+		"firstVillageScr" : {
+			"price" : 500,
+			"effect" : 3,
+			"effectAmount" : 1
+		}
+	}
+}

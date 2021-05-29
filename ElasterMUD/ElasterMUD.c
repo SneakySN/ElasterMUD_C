@@ -36,12 +36,14 @@
 /* Stats are decided by calculation & leveling up */
 
 typedef struct charDataStorage {
-	/* User Stats/Data - Character Name, Character Class, Stats */
+	/* User Stats/Data - Character Name, Character Class, Stats, etc */
 	char* charName;
 	int charClass;
 	int charLevel;
 	int charExp;
 	int curGold;
+	int charInv[40];
+	int charInvAmount[40];
 
 	/* Stat Order: HP, MP, STR, DEX, INT, AGI, VIT, LUK, ATK, DEF */
 	int charStat[10];
@@ -102,9 +104,9 @@ int BaseSubArmor[4] = { 1, 1, 1, 1 };
 /* Base Enchantment Reset Array */
 int enchantEraseBase[7] = { 0, 0, 0, 0, 0, 0, 0 };
 
+/* Item Table */
+
 /* Functions */
-void getInput(char* temp);
-void getInput(int* temp);
 
 void charInitialize (charData *mainChar) {
 	/* Weapon */
@@ -140,26 +142,26 @@ void statCalculate(int charClass) {
 
 }
 
-void getInput(char* temp) {
+void getInputChar(char* temp) {
 	printf(" > ");
 	scanf("%s", temp);
 }
 
-void getInput(int* temp) {
+void getInputInt(int* temp) {
 	printf(" > ");
 	scanf("%s", temp);
 }
 
-void mapCase(int caseNum, charData* mainChar, char* temp) {
+void mapCase(int caseNum, charData* mainChar, char* temp, cJSON* jItems) {
 	/* Function which takes care of map menus */
 	switch (caseNum) {
 		case 1:
 			/* Starting Village aka First Village */
 			clscr();
 			printf("\n[First Village]\n\n1 Villager, 1 Shop, and 1 Well exists.\n\n");
-			getInput(&temp);
+			getInputChar(&temp);
 			if (strstr(&temp, "shop")) {
-				sysCase(4, )
+				sysCase(4, &mainChar, &temp, &jItems);
 			}
 	}
 }
@@ -172,11 +174,24 @@ void eventExecute(int caseNum) {
 
 }
 
+void charGetItem(int caseNum, charData* mainChar, int itemCode, cJSON* jItems) {
+	/* The function used when the player has obtained an item */
+	int invAmount = sizeof(mainChar->charInv) / sizeof(int);
+	if (invAmount >= 35) {
+		printf("Warning: Your inventory is almost full.");
+	}
+	switch (caseNum) {
+	case 1:
+		/* The player has bought an item for money. */
+		memcpy(mainChar->charInv + 1, jItems)
+	}
+}
+
 void diagCase(int caseNum, char* temp) {
 
 }
 
-void sysCase(int caseNum, char* temp, charData *mainChar) {
+void sysCase(int caseNum, char* temp, charData *mainChar, cJSON* jItems) {
 	/* Function which takes care of the core results */
 	/* Will be taking more of the system, rather than scenarios */
 	char Answer;
@@ -189,9 +204,9 @@ void sysCase(int caseNum, char* temp, charData *mainChar) {
 			printf("\nFirst, enter your username.");
 			while (1) {
 				printf("\nUsername: ");
-				getInput(mainChar->charName);
+				getInputChar(mainChar->charName);
 				printf("Username: %s\nIs this correct? [Y/N] :", mainChar->charName);
-				getInput(&Answer);
+				getInputChar(&Answer);
 				if (Answer == "Y") {
 					break;
 				}
@@ -205,15 +220,15 @@ void sysCase(int caseNum, char* temp, charData *mainChar) {
 			printf("\nSecondary, pick your class.\n\n[1. Warrior]\n[2. Archer]\n[3. Wizard]\n[4. Thief]\n\n");
 			while (1) {
 				printf("\nClass: ");
-				getInput(mainChar->charClass);
-				if (1 <= mainChar->charClass <= 4) sysCase(2, &temp, &mainChar);
+				getInputInt(mainChar->charClass);
+				if (1 <= mainChar->charClass <= 4) sysCase(2, &temp, &mainChar, &jItems);
 				else {
 					printf("\nError - No such class exists. CODE : 1");
 					printf("\n\nType Again.");
 					continue;
 				}
 				printf("\nClass: %s\nIs this correct? [Y/N] :", mainChar->className);
-				getInput(&Answer);
+				getInputChar(&Answer);
 				if (Answer == "Y") {
 					break;
 				}
@@ -225,7 +240,7 @@ void sysCase(int caseNum, char* temp, charData *mainChar) {
 				}
 			}
 			printf("\nAlright, setting up your character...");
-			sysCase(3, &temp, &mainChar);
+			sysCase(3, &temp, &mainChar, &jItems);
 			printf("\nDone!");
 			printf("\nYou will be sent to the first village.\n\nWe hope you enjoy your stay!");
 			mainChar->curMapLocation = 1;
@@ -261,10 +276,10 @@ void sysCase(int caseNum, char* temp, charData *mainChar) {
 		switch (mainChar->curMapLocation) {
 		case 1:
 			printf("\nShop has 3 items.\n Items: Health Potion[hp], Mana Potion[mp], Return Scroll to First Village[rs].\n\n");
-			getInput(&temp);
+			getInputChar(&temp);
 			if (strstr(&temp, "buy")) {
 				if (strstr(&temp, "hp")) {
-
+					charGetItem(1, &mainChar, 1, &jItems);
 				}
 			}
 		}
@@ -278,11 +293,24 @@ int main() {
 	/* Variables */
 	char* temp = malloc(sizeof(temp)*64);
 	charData mainChar;
+	/* Item Table Reading */
+	FILE* itemTable;
+	itemTable = fopen("/ItemData.json", "r");
+	fseek(itemTable, 0L, SEEK_END);
+	long numByte = ftell(itemTable);
+	fseek(itemTable, 0L, SEEK_SET);
+	char* tableCharArr = (char*)calloc(numByte, sizeof(char));
+	fread(tableCharArr, sizeof(char), numByte, itemTable);
+	fclose(itemTable);
+
+	cJSON* jItemTable = cJSON_Parse(tableCharArr);
+	cJSON* jItem = cJSON_GetObjectItem(jItemTable, "items");
+	
 
 	/* Dialogues & Basic Structure of the game */
 	printf("Test Message: Hello World!\n");
 	printf("\nWelcome to the world we call, Elaster.\n");
 	printf("\nWant to start your adventures, right?\n");
-	sysCase(1, &temp, &mainChar); /* case 0 - Information for the account.*/
-	mapCase(mainChar.curMapLocation, &mainChar, &temp);
+	sysCase(1, &temp, &mainChar, &jItems); /* case 0 - Information for the account.*/
+	mapCase(mainChar.curMapLocation, &mainChar, &temp, &jItems);
 }

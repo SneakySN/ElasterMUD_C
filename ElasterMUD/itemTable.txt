@@ -1,0 +1,6 @@
+[Items]
+
+0 - None
+1 - HP Potion
+2 - MP Potion
+3 - Return Scroll to First Village

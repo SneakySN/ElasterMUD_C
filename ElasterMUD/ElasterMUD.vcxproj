@@ -147,6 +147,14 @@
     <ClInclude Include="cJSON.h" />
     <ClInclude Include="cJSON_Utils.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ItemData.json" />
+    <None Include="MobData.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="effectTable.txt" />
+    <Text Include="itemTable.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

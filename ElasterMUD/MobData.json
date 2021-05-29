@@ -1,0 +1,9 @@
+{
+	"Slime" : {
+		"HP" : 20,
+		"MP" : 10,
+		"ATK" : 4,
+		"DEF" : 4,
+		"Skill" : false
+	}
+}

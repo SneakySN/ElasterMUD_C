@@ -33,4 +33,20 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="MobData.json">
+      <Filter>소스 파일</Filter>
+    </None>
+    <None Include="ItemData.json">
+      <Filter>소스 파일</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="effectTable.txt">
+      <Filter>소스 파일</Filter>
+    </Text>
+    <Text Include="itemTable.txt">
+      <Filter>소스 파일</Filter>
+    </Text>
+  </ItemGroup>
 </Project>
